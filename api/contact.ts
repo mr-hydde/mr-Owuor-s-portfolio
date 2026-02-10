@@ -1,4 +1,4 @@
-import  nodemailer from 'nodemailer';
+import nodemailer from 'nodemailer';
 import { VercelRequest, VercelResponse } from '@vercel/node';
 
 export default async function handler(
@@ -24,6 +24,15 @@ export default async function handler(
     return res.status(400).json({ error: 'Missing required fields' });
   }
 
+  // Check if credentials exist
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_APP_PASS) {
+    console.error('Missing email credentials:', {
+      hasUser: !!process.env.EMAIL_USER,
+      hasPass: !!process.env.EMAIL_APP_PASS
+    });
+    return res.status(500).json({ error: 'Server misconfiguration: Email credentials missing' });
+  }
+
   const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 587,
@@ -47,6 +56,6 @@ export default async function handler(
     return res.json({ ok: true });
   } catch (err) {
     console.error('Error sending email:', err);
-    return res.status(500).json({ error: 'Failed to send email' });
+    return res.status(500).json({ error: 'Failed to send email', details: String(err) });
   }
 }
