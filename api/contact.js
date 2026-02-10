@@ -1,10 +1,6 @@
-import nodemailer from 'nodemailer';
-import { VercelRequest, VercelResponse } from '@vercel/node';
+const nodemailer = require('nodemailer');
 
-export default async function handler(
-  req: VercelRequest,
-  res: VercelResponse
-) {
+module.exports = async function handler(req, res) {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -26,10 +22,7 @@ export default async function handler(
 
   // Check if credentials exist
   if (!process.env.EMAIL_USER || !process.env.EMAIL_APP_PASS) {
-    console.error('Missing email credentials:', {
-      hasUser: !!process.env.EMAIL_USER,
-      hasPass: !!process.env.EMAIL_APP_PASS
-    });
+    console.error('Missing email credentials');
     return res.status(500).json({ error: 'Server misconfiguration: Email credentials missing' });
   }
 
@@ -56,6 +49,6 @@ export default async function handler(
     return res.json({ ok: true });
   } catch (err) {
     console.error('Error sending email:', err);
-    return res.status(500).json({ error: 'Failed to send email', details: String(err) });
+    return res.status(500).json({ error: 'Failed to send email' });
   }
-}
+};
