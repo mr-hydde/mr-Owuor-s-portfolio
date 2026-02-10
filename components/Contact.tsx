@@ -14,7 +14,7 @@ const DEFAULT_STATE: ContactState = {
   message: ''
 };
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_URL = import.meta.env.VITE_API_URL || '/api/contact';
 
 const Contact: React.FC = () => {
   const [contact, setContact] = React.useState<ContactState>(DEFAULT_STATE);
@@ -46,7 +46,7 @@ const Contact: React.FC = () => {
     }
 
     try {
-      const response = await fetch(`${API_URL}/api/contact`, {
+      const response = await fetch(`/api/contact`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
